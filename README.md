@@ -1,1 +1,3 @@
 # adopting-adversarial-approaches---LLMs
+
+Red teaming Large Language Models (LLMs) involves adopting an adversarial approach to evaluate their security, robustness, and resilience against malicious inputs or manipulation. The goal is to identify and mitigate potential vulnerabilities before malicious actors can exploit them. When red teaming LLMs developed by major tech companies like Microsoft, Meta, Google, NVIDIA, and organizations like Hugging Face, the approach needs to be comprehensive, covering various aspects from input manipulation to model biases. Let's break this down into a structured process, using clear analogies to make complex ideas more accessible. 
