@@ -1,3 +1,48 @@
-# adopting-adversarial-approaches---LLMs
+# ai-red tooling
 
-Red teaming Large Language Models (LLMs) involves adopting an adversarial approach to evaluate their security, robustness, and resilience against malicious inputs or manipulation. The goal is to identify and mitigate potential vulnerabilities before malicious actors can exploit them. When red teaming LLMs developed by major tech companies like Microsoft, Meta, Google, NVIDIA, and organizations like Hugging Face, the approach needs to be comprehensive, covering various aspects from input manipulation to model biases. Let's break this down into a structured process, using clear analogies to make complex ideas more accessible. 
+
+Rename scriptedAI.py to pickle_rick.py
+1. Create the Python Script:
+
+Open a text editor of your choice (e.g., Notepad, Sublime Text, VS Code).
+Copy the Python code provided in my previous response and paste it into the editor.
+Save the file with a .py extension, for example, sagemaker_interaction.py.
+2. Create the Documentation (README.md):
+
+Open another text file in your editor.
+Use the following structure and fill in the details:
+
+# SageMaker Endpoint Interaction Script
+
+## Description
+
+This script demonstrates how to interact with a deployed SageMaker endpoint using the Amazon SageMaker SDK (boto3) in Python.
+
+## Requirements
+
+- Python 3.x
+- boto3 package (`pip install boto3 sagemaker`)
+- AWS credentials configured with access to SageMaker resources
+
+## Usage
+
+1. **Replace placeholders:**
+   - Update `endpoint_name` with the name of your deployed SageMaker endpoint.
+   - Update `region_name` with the AWS region where your endpoint is deployed.
+   - Modify the `data` variable according to your model's input format. 
+2. **Run the script:**
+   - `python sagemaker_interaction.py`
+
+## Notes
+
+- Ensure that the input data format matches what your deployed model expects.
+- The script assumes the endpoint response is in JSON format. Adjust accordingly if necessary.
+
+## Example
+
+```python
+# Example input data (modify as needed)
+data = {"text": "This is a sample text for prediction."}
+
+# Example prediction response (format may vary)
+{"predicted_class": "Positive", "probability": 0.95}
