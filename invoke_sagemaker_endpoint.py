@@ -1,25 +1,31 @@
-
 import boto3
 import json
+import argparse
 
-# Initialize the SageMaker runtime client using the default configuration
-client = boto3.client('runtime.sagemaker')
+def invoke_sagemaker_endpoint(region, endpoint_name, payload):
+    # Initialize the boto3 client for SageMaker
+    sagemaker_client = boto3.client('sagemaker-runtime', region_name=region)
 
-# Define the endpoint name of the SageMaker model you want to interact with
-endpoint_name = 'your-model-endpoint-name'
-
-# Example payload: replace this with the actual data format your model expects
-payload = json.dumps({'key': 'value'})
-
-# Function to invoke the SageMaker endpoint
-def invoke_model(data):
-    response = client.invoke_endpoint(
+    # Invoke the endpoint
+    response = sagemaker_client.invoke_endpoint(
         EndpointName=endpoint_name,
-        ContentType='application/json',
-        Body=data
+        ContentType='application/json',  # Specify the content type
+        Body=json.dumps({"question": payload})
     )
-    # Output the response from the model
-    print(response['Body'].read())
 
-# Invoke the model with the example payload
-invoke_model(payload)
+    # Read the response
+    result = response['Body'].read().decode('utf-8')
+    print("Response from endpoint:", result)
+
+if __name__ == "__main__":
+    # Set up argument parsing
+    parser = argparse.ArgumentParser(description='Invoke a SageMaker endpoint')
+    parser.add_argument('--region', type=str, required=True, help='AWS region where the SageMaker endpoint is deployed')
+    parser.add_argument('--endpoint', type=str, required=True, help='Name of the SageMaker endpoint')
+    parser.add_argument('--payload', type=str, required=True, help='Question to send to the endpoint')
+
+    # Parse the arguments
+    args = parser.parse_args()
+
+    # Invoke the SageMaker endpoint
+    invoke_sagemaker_endpoint(args.region, args.endpoint, args.payload)
