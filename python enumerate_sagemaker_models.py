@@ -1,49 +1,62 @@
-import boto3
-import os
+#!/bin/bash
 
-# Initialize Boto3 clients for SageMaker and IAM
-sagemaker_client = boto3.client('sagemaker')
-iam_client = boto3.client('iam')
+# Check if the correct number of arguments are provided
+if [ "$#" -ne 3 ]; then
+    echo "Usage: $0 <region> <endpoint_name> <payload_file>"
+    exit 1
+fi
 
-def list_sagemaker_models():
-    # List SageMaker models
-    response = sagemaker_client.list_models()
+# Variables
+REGION=$1
+ENDPOINT_NAME=$2
+PAYLOAD_FILE=$3
+DEBUG_LOG="debug.log"
 
-    models = response['Models']
-    for model in models:
-        model_name = model['ModelName']
-        model_arn = model['ModelArn']
-        
-        # Describe model details
-        model_details = sagemaker_client.describe_model(ModelName=model_name)
-        container_uri = model_details['PrimaryContainer']['Image']
-        
-        print(f"Model: {model_name}")
-        print(f"  ARN: {model_arn}")
-        print(f"  Container: {container_uri}")
-        
-        # List endpoints associated with the model
-        list_endpoints_for_model(model_name)
+# Check if the payload file exists
+if [ ! -f "$PAYLOAD_FILE" ]; then
+    echo "Error: Payload file '$PAYLOAD_FILE' not found!"
+    exit 1
+fi
 
-def list_endpoints_for_model(model_name):
-    # List endpoints associated with the given model
-    response = sagemaker_client.list_endpoints(ModelNameEquals=model_name)
+# AWS CLI command to generate the necessary headers
+aws sagemaker-runtime invoke-endpoint \
+  --region $REGION \
+  --endpoint-name $ENDPOINT_NAME \
+  --body fileb://$PAYLOAD_FILE \
+  --content-type application/json \
+  --cli-binary-format raw-in-base64-out \
+  --debug > $DEBUG_LOG 2>&1
 
-    endpoints = response['Endpoints']
-    if endpoints:
-        print("  Endpoints:")
-        for endpoint in endpoints:
-            endpoint_name = endpoint['EndpointName']
-            endpoint_arn = endpoint['EndpointArn']
-            
-            print(f"    - Name: {endpoint_name}")
-            print(f"      ARN: {endpoint_arn}")
-    else:
-        print("  No endpoints found for this model.")
+# Check if the AWS CLI command was successful
+if [ $? -ne 0 ]; then
+    echo "Error: Failed to invoke AWS CLI command. Check $DEBUG_LOG for details."
+    exit 1
+fi
 
-def main():
-    # List all SageMaker models and associated endpoints
-    list_sagemaker_models()
+# Extract headers from the debug output
+AUTHORIZATION=$(grep -oP '(?<=Authorization: ).*' $DEBUG_LOG)
+X_AMZ_DATE=$(grep -oP '(?<=X-Amz-Date: ).*' $DEBUG_LOG)
 
-if __name__ == "__main__":
-    main()
+# Check if the headers were successfully extracted
+if [ -z "$AUTHORIZATION" ] || [ -z "$X_AMZ_DATE" ]; then
+    echo "Error: Failed to extract necessary headers from $DEBUG_LOG."
+    exit 1
+fi
+
+# Make the curl request
+RESPONSE=$(curl -s -X POST https://runtime.sagemaker.$REGION.amazonaws.com/endpoints/$ENDPOINT_NAME/invocations \
+  -H "Content-Type: application/json" \
+  -H "X-Amz-Date: $X_AMZ_DATE" \
+  -H "Authorization: $AUTHORIZATION" \
+  --data @$PAYLOAD_FILE \
+  -k)
+
+# Check if the curl request was successful
+if [ $? -ne 0 ]; then
+    echo "Error: Failed to make the curl request."
+    exit 1
+fi
+
+# Output the response
+echo "Response from endpoint:"
+echo "$RESPONSE"
