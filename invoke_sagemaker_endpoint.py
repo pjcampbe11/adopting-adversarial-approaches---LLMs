@@ -1,6 +1,9 @@
 import boto3
 import json
 import argparse
+import os
+import sys
+import botocore
 
 def invoke_sagemaker_endpoint(region, endpoint_name, payload):
     # Initialize the boto3 client for SageMaker
@@ -10,12 +13,14 @@ def invoke_sagemaker_endpoint(region, endpoint_name, payload):
     response = sagemaker_client.invoke_endpoint(
         EndpointName=endpoint_name,
         ContentType='application/json',  # Specify the content type
-        Body=json.dumps({"question": payload})
+        Body=json.dumps({"Inputs": payload, "max_tokens":512, "temperature":0.2,  })
     )
 
     # Read the response
     result = response['Body'].read().decode('utf-8')
     print("Response from endpoint:", result)
+    parse_text = response['generations'][0]['text']
+    parse_text
 
 if __name__ == "__main__":
     # Set up argument parsing
