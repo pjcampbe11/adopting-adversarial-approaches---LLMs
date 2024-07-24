@@ -85,21 +85,20 @@ if __name__ == "__main__":
  # Example commands:
 
   # Encode filenames only:
-  # python script.py /path/to/files
+  # python3.9 encode_it.py /path/to/files
 
   # Encode filenames and rename extensions:
-  # python script.py /path/to/files -r enc
+  # python3.9 encode_it.py /path/to/files -r enc
 
   # Encode filenames and file content:
-  # python script.py /path/to/files -en
+  # python3.9 encode_it.py /path/to/files -en
 
   # Encode filenames, file content and rename extensions:
-  # python script.py /path/to/files -r enc -en 
+  # python3.9 encode_it.py /path/to/files -r enc -en 
 
   # Undo encoding (decode filenames and/or content, and extensions if renamed):
-  # python script.py /path/to/files -u 
+  # python3.9 encode_it.py /path/to/files -u 
 
-  
 Explanation:
 
 Import necessary modules:
