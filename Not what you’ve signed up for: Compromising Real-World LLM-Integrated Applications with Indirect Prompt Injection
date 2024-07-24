@@ -1,3 +1,5 @@
+https://arxiv.org/pdf/2302.12173
+
 Introduction
 The paper titled "Not what you’ve signed up for: Compromising Real-World LLM-Integrated Applications with Indirect Prompt Injection" explores the vulnerabilities and security risks associated with Large Language Models (LLMs) integrated into various applications. These LLMs, such as GPT-4, are susceptible to adversarial prompting or Prompt Injection (PI) attacks, which can be executed indirectly by embedding prompts in data that the LLM is likely to retrieve and process. This paper presents a comprehensive taxonomy of these threats and demonstrates the practical feasibility of such attacks on real-world systems and synthetic applications.
 
