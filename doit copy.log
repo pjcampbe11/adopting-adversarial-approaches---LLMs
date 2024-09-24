@@ -1,0 +1,8 @@
+https://wuzzi.net/posts/ -O /Users/red/Downloads/wuzzi-download +*.wuzzi.net/* -v
+File generated automatically on Tue, 24 Sep 2024 13:38:55, do NOT edit
+
+To update a mirror, just launch httrack without any parameters
+The existing cache will be used (and modified)
+To have other options, retype all parameters and launch HTTrack
+To continue an interrupted mirror, just launch httrack without any parameters
+
